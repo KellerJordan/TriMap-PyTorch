@@ -20,8 +20,10 @@ class TriMap(nn.Module):
         d_ij = 1 + torch.sum(y_ij**2, -1)
         d_ik = 1 + torch.sum(y_ik**2, -1)
 
-        loss = self.weights.dot(log_t_ratio(d_ij, d_ik, t))
-        # loss = abs_log(self.weights, d_ij / d_ik).sum()
+        if loss_func == 'log_t':
+            loss = self.weights.dot(log_t_ratio(d_ij, d_ik, t))
+        elif loss_func == 'abs_log':
+            loss = abs_log(self.weights, d_ij / d_ik).sum()
         num_viol = torch.sum((d_ij > d_ik).type(torch.FloatTensor))
 
         return loss, num_viol

@@ -14,6 +14,8 @@ def generate_triplets(X, kin=50, kout=10, kr=5, svd_dim=50,
     @author: ehsanamid
     """
 
+    if verbose:
+        print('[*] Reducing input to %d dimensions' % svd_dim)
     X = X.astype(np.float32)
     X -= np.min(X)
     X /= np.max(X)
@@ -50,7 +52,7 @@ def generate_triplets(X, kin=50, kout=10, kr=5, svd_dim=50,
                     l += 1
                     cnt += 1
         if verbose and (i+1) % 500 == 0:
-            print('Generated triplets %d / %d' % (i+1, n))
+            print('[*] Generated triplets %d / %d' % (i+1, n))
     if random_triplets:
         triplets_rand = np.zeros([n * kr, 3], dtype=np.int32)
         weights_rand = np.zeros(n * kr)
@@ -70,7 +72,7 @@ def generate_triplets(X, kin=50, kout=10, kr=5, svd_dim=50,
                 weights_rand[i * kr + cnt] = p_sim / p_out
                 cnt += 1
             if verbose and (i+1) % 500 == 0:
-                print('Generated random triplets %d / %d' % (i+1, n))
+                print('[*] Generated random triplets %d / %d' % (i+1, n))
         triplets = np.vstack((triplets, triplets_rand))
         weights = np.hstack((weights, weights_rand))
     triplets = triplets[~np.isnan(weights)]
