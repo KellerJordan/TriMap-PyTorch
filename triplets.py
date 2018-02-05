@@ -5,22 +5,23 @@ Created on Sat May 27 12:46:25 2017
 @author: ehsanamid
 """
 
+import numpy as np
 from sklearn.neighbors import NearestNeighbors as knn
 from sklearn.decomposition import TruncatedSVD
 
 
-def generate_triplets(X, kin=50, kout=10, kr=5,
-                      input_dim=50, use_svd=True,
+def generate_triplets(X, kin=50, kout=10, kr=5, svd_dim=50,
                       weight_adj=False, random_triplets=True, verbose=False):
     
+    X = X.astype(np.float32)
     X -= np.min(X)
     X /= np.max(X)
     X -= np.mean(X, axis=0)
-    if use_svd:
-        X = TruncatedSVD(n_components=input_dim, random_state=0).fit_transform(X)
+    # set svd_dim = None for no projection
+    if svd_dim:
+        X = TruncatedSVD(n_components=svd_dim, random_state=0).fit_transform(X)
     
-    num_extra = max(kin+50, 60) # look up more neighbors
-    # ^ ???
+    num_extra = max(kin+50, 50) # look up more neighbors
     n = X.shape[0]
     nbrs = knn(n_neighbors= num_extra + 1, algorithm='auto').fit(X)
     distances, indices = nbrs.kneighbors(X)
@@ -50,7 +51,7 @@ def generate_triplets(X, kin=50, kout=10, kr=5,
         if verbose and (i+1) % 500 == 0:
             print('Generated triplets %d / %d' % (i+1, n))
     if random_triplets:
-        triplets_rand = np.zeros([n * kr, 3])
+        triplets_rand = np.zeros([n * kr, 3], dtype=np.int32)
         weights_rand = np.zeros(n * kr)
         for i in range(n):
             cnt = 0
