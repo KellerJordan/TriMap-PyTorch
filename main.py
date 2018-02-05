@@ -10,11 +10,17 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--dataset', type=str, default='mnist2500')
 
-parser.add_argument('--optimizer', type=str, default='gd')
 parser.add_argument('--num_iters', type=int, default=1000)
+parser.add_argument('--optimizer', type=str, default='gd')
 parser.add_argument('--out_dim', type=int, default=2)
 parser.add_argument('--svd_dim', type=int, default=50)
 parser.add_argument('--lr', type=float, default=1000.0)
+
+parser.add_argument('--anneal_scheme', type=int, default=0,
+                    help='annealing scheme: 0 is no annealing, '+
+                    '1 is linear annealing from tmin to tmax after half of iterations')
+parser.add_argument('--t', type=float, default=2.0)
+parser.add_argument('--t_max', type=float, default=3.0)
 
 parser.add_argument('--save_fig', action='store_true')
 parser.add_argument('--animate', action='store_true')

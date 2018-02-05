@@ -1,9 +1,4 @@
-"""
-generate_triplets()
-Created on Sat May 27 12:46:25 2017
-
-@author: ehsanamid
-"""
+from __future__ import print_function
 
 import numpy as np
 from sklearn.neighbors import NearestNeighbors as knn
@@ -12,7 +7,13 @@ from sklearn.decomposition import TruncatedSVD
 
 def generate_triplets(X, kin=50, kout=10, kr=5, svd_dim=50,
                       weight_adj=False, random_triplets=True, verbose=False):
-    
+    """
+    generate_triplets()
+    Created on Sat May 27 12:46:25 2017
+
+    @author: ehsanamid
+    """
+
     X = X.astype(np.float32)
     X -= np.min(X)
     X /= np.max(X)

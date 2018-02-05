@@ -46,13 +46,24 @@ class Wrapper(object):
         C = np.inf
         # best_C, best_Y = np.inf, None
 
+        t = self.config.t
+        if self.config.anneal_scheme == 1:
+            tmin = self.config.t
+            tmax = self.config.t_max
+
         if return_seq:
             Y_seq = []
 
-        for i in range(self.config.num_iters):
+        for itr in range(self.config.num_iters):
             old_C = C
 
-            loss, num_viol = model(t=2)
+            if self.config.anneal_scheme == 1:
+                # scale t linearly by fifths after first half of training
+                if itr >= self.config.num_iters / 2.0:
+                    if itr % int(self.config.num_iters / 10.0) == 0:
+                        t += (tmax - tmin) / 5.0
+
+            loss, num_viol = model(t=t)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -75,9 +86,9 @@ class Wrapper(object):
             #     best_C = C
             #     best_Y = model.get_embeddings()
 
-            if self.config.verbose and (i+1) % self.config.print_every == 0:
+            if self.config.verbose and (itr+1) % self.config.print_every == 0:
                 print('[{}/{}] Loss: {:3.3f} Triplet Error: {:.2%}'. \
-                    format(i+1, self.config.num_iters, C, viol))
+                    format(itr+1, self.config.num_iters, C, viol))
 
         return Y_seq if return_seq else model.get_embeddings()
         # return Y_seq if return_seq else best_Y
