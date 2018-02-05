@@ -23,8 +23,8 @@ def savegif(Y_seq, labels, fig_name, path):
         return scatter,
 
     def update(i):
-        if i % 50 == 0:
-            print('Animating, iteration %d / %d' % (i, len(Y_seq)))
+        if (i+1) % 50 == 0:
+            print('[%d / %d] Animating frames' % (i+1, len(Y_seq)))
         ax.clear()
         plt.legend(handles=patches, loc='upper right')
         ax.scatter(Y_seq[i][:, 0], Y_seq[i][:, 1], 1, labels)
