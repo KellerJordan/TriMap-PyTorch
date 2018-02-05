@@ -18,7 +18,7 @@ class TriMap(nn.Module):
             self.triplets = Variable(torch.from_numpy(triplets).type(torch.LongTensor))
             self.weights = Variable(torch.FloatTensor(weights))
     
-    def forward(self, t):
+    def forward(self, t, loss_func='log_t'):
         y_ij = self.Y(self.triplets[:, 0]) - self.Y(self.triplets[:, 1])
         y_ik = self.Y(self.triplets[:, 0]) - self.Y(self.triplets[:, 2])
         d_ij = 1 + torch.sum(y_ij**2, -1)
