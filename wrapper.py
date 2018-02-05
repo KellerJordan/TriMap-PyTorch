@@ -54,6 +54,10 @@ class Wrapper(object):
         if return_seq:
             Y_seq = []
 
+        print('[*] Training on %s using %s with anneal scheme %d' % (
+              'GPU' if torch.cuda.is_available() else 'CPU',
+              self.config.optimizer, self.config.anneal_scheme))
+
         for itr in range(self.config.num_iters):
             old_C = C
 
@@ -95,13 +99,14 @@ class Wrapper(object):
 
     def load_triplets(self, path):
         with open(path, 'rb') as f:
+            print('[*] Loading triplets from %s' % path)
             self.triplets, self.weights, self.num_examples = pickle.load(f)
 
     def generate_triplets(self, X, path=None):
         self.num_examples = X.shape[0]
         self.triplets, self.weights = generate_triplets(X, svd_dim=self.config.svd_dim, verbose=self.config.verbose)
         if path:
-            print('Saving generated triplets to %s' % path)
+            print('[*] Saving generated triplets to %s' % path)
             with open(path, 'wb') as f:
                 pickle.dump((self.triplets, self.weights, self.num_examples), f)
 
