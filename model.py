@@ -5,14 +5,18 @@ from torch.autograd import Variable
 
 class TriMap(nn.Module):
 
-    def __init__(self, triplets, weights, out_shape, embed_init):
+    def __init__(self, triplets, weights, out_shape, embed_init, use_cuda=False):
         super(TriMap, self).__init__()
         n, num_dims = out_shape
         self.Y = nn.Embedding(n, num_dims, sparse=False)
         self.Y.weight.data = torch.Tensor(embed_init)
         
-        self.triplets = Variable(torch.from_numpy(triplets).type(torch.LongTensor))
-        self.weights = Variable(torch.FloatTensor(weights))
+        if use_cuda:
+            self.triplets = Variable(torch.from_numpy(triplets).type(torch.cuda.LongTensor))
+            self.weights = Variable(torch.cuda.FloatTensor(weights))
+        else:
+            self.triplets = Variable(torch.from_numpy(triplets).type(torch.LongTensor))
+            self.weights = Variable(torch.FloatTensor(weights))
     
     def forward(self, t):
         y_ij = self.Y(self.triplets[:, 0]) - self.Y(self.triplets[:, 1])

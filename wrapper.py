@@ -22,12 +22,15 @@ class Wrapper(object):
         
         out_shape = [self.num_examples, self.config.out_dim]
         Yinit = embed_init or 0.0001 * np.random.normal(size=out_shape)
-        model = TriMap(self.triplets, self.weights,
-                       out_shape=out_shape, embed_init=Yinit)
         
         if torch.cuda.is_available():
-            print('[*] Training on GPU')
+            model = TriMap(self.triplets, self.weights,
+                           out_shape=out_shape, embed_init=Yinit)
             model.cuda()
+        
+        else:
+            model = TriMap(self.triplets, self.weights,
+                           out_shape=out_shape, embed_init=Yinit)
 
         lr = 1000.0 if self.config.lr is None else self.config.lr
         eta = lr * self.num_examples / num_triplets
