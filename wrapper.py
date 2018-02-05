@@ -25,7 +25,8 @@ class Wrapper(object):
         
         if torch.cuda.is_available():
             model = TriMap(self.triplets, self.weights,
-                           out_shape=out_shape, embed_init=Yinit)
+                           out_shape=out_shape, embed_init=Yinit,
+                           use_cuda=True)
             model.cuda()
         
         else:
