@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='mnist2500')
 
 parser.add_argument('--num_iters', type=int, default=1000)
-parser.add_argument('--optimizer', type=str, default='gd')
+parser.add_argument('--optimizer', type=str, default='gd-momentum')
 parser.add_argument('--out_dim', type=int, default=2)
 parser.add_argument('--svd_dim', type=int, default=50)
 parser.add_argument('--lr', type=float, default=1000.0)

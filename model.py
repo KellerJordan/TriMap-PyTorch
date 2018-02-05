@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 from torch import nn
 from torch.autograd import Variable
@@ -18,16 +19,15 @@ class TriMap(nn.Module):
             self.triplets = Variable(torch.from_numpy(triplets).type(torch.LongTensor))
             self.weights = Variable(torch.FloatTensor(weights))
     
-    def forward(self, t, loss_func='log_t'):
+    def forward(self, t):
         y_ij = self.Y(self.triplets[:, 0]) - self.Y(self.triplets[:, 1])
         y_ik = self.Y(self.triplets[:, 0]) - self.Y(self.triplets[:, 2])
         d_ij = 1 + torch.sum(y_ij**2, -1)
         d_ik = 1 + torch.sum(y_ik**2, -1)
 
-        if loss_func == 'log_t':
-            loss = self.weights.dot(log_t_ratio(d_ij, d_ik, t))
-        elif loss_func == 'abs_log':
-            loss = abs_log(self.weights, d_ij / d_ik).sum()
+        # loss = self.weights.dot(log_t_ratio(d_ij, d_ik, t))
+        # loss = self.weights.dot(d_ij / (d_ij + d_ik))
+        loss = self.weights.dot(log_t(d_ij / d_ik, t))
         num_viol = torch.sum((d_ij > d_ik).type(torch.FloatTensor))
 
         return loss, num_viol
@@ -37,19 +37,11 @@ class TriMap(nn.Module):
 
 def log_t(x, t=2):
     if t == 1:
-        return np.log(x)
+        return torch.log(x + 1)
     else:
-        unscaled = 1 / (x + 1)**(t - 1)
-        return (1 - unscaled) / (t - 1)
-
-# equivalent to log_t(a/b, t) (but better numerical behavior)
-def log_t_ratio(a, b, t=2):
-    if t == 1:
-        return np.log(a / b)
-    else:
-        unscaled = (b / (a + b))**(t - 1)
-        return (1 - unscaled) / (t - 1)
+        unscaled = (x + 1)**(1 - t)
+        return (unscaled - 1) / (1 - t)
 
 # alternate loss function -- punish deviation from proper ratio in either direction
 def abs_log(a, b):
-    return np.abs(np.log(a * b))
+    return torch.abs(torch.log(a * b))
