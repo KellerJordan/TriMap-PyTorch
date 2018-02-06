@@ -51,7 +51,7 @@ class Wrapper(object):
         # best_C, best_Y = np.inf, None
 
         t = self.config.t
-        if self.config.anneal_scheme == 1:
+        if self.config.anneal_scheme != 1:
             tmin = self.config.t
             tmax = self.config.t_max
 
@@ -71,6 +71,10 @@ class Wrapper(object):
                     if itr % int(self.config.num_iters / 10.0) == 0:
                         t += (tmax - tmin) / 5.0
 
+            elif self.config.anneal_scheme == 2:
+                # scale t linearly throughout training
+                t += (tmax - tmin) / self.config.num_iters
+ 
             loss, num_viol = model(t=t)
             optimizer.zero_grad()
             loss.backward()

@@ -25,8 +25,7 @@ class TriMap(nn.Module):
         d_ij = 1 + torch.sum(y_ij**2, -1)
         d_ik = 1 + torch.sum(y_ik**2, -1)
 
-        # loss = self.weights.dot(log_t_ratio(d_ij, d_ik, t))
-        # loss = self.weights.dot(d_ij / (d_ij + d_ik))
+        # loss = self.weights.dot(d_ik / (d_ij + d_ik))
         loss = self.weights.dot(log_t(d_ij / d_ik, t))
         num_viol = torch.sum((d_ij > d_ik).type(torch.FloatTensor))
 
@@ -36,7 +35,7 @@ class TriMap(nn.Module):
         return self.Y.weight.data.cpu().numpy()
 
 def log_t(x, t=2):
-    if t == 1:
+    if abs(t-1) < 0.01:
         return torch.log(x + 1)
     else:
         unscaled = (x + 1)**(1 - t)
