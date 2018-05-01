@@ -1,4 +1,5 @@
 numpy
+scipy
 sklearn
 matplotlib
-scipy
+torch
