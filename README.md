@@ -13,3 +13,7 @@ Animations of training:
 ![batch gradient descent with momentum](https://github.com/KellerJordan/figures/blob/master/sgd-momentum60k.gif)
 
 ![linear annealing](https://github.com/KellerJordan/figures/blob/master/mnist70k-gd-momentum-anneal2.gif)
+
+### Authors
+
+Keller Jordan, Ehsan Amid
