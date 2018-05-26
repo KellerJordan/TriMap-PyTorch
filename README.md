@@ -8,7 +8,7 @@ Making .gif animations requires `imagemagick`.
     cd ..
     python3 main.py --dataset=mnist70k --num_iters=1500 --save_fig --animate --verbose
 
-Animations of training:
+Animations of training (see [tSNE-Animation](https://github.com/KellerJordan/tSNE-Animation) for the equivalent animations with t-SNE):
 
 ![batch gradient descent with momentum](https://github.com/KellerJordan/figures/blob/master/sgd-momentum60k.gif)
 
